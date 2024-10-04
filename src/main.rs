@@ -2,5 +2,7 @@ mod api;
 mod db;
 
 fn main() {
-    println!("Hello, world!");
+    db::create_database().unwrap();
+    db::create_tables().unwrap();
+    println!("database and tables created");
 }
