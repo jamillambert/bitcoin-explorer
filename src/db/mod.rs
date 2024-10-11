@@ -3,6 +3,7 @@
 //! This module provides functions for database creation.
 
 use postgres::{Client, Error, NoTls};
+use std::io::{self, Write};
 
 /// Creates a new PostgreSQL database.
 ///
@@ -15,7 +16,22 @@ use postgres::{Client, Error, NoTls};
 /// exists, or the user postgres does not have the necessary permissions to create a new
 /// database.
 pub fn create_database() -> Result<(), Error> {
-    let mut client = Client::connect("host=localhost user=postgres password=postgres", NoTls)?;
+    print!("Enter PostgreSQL username: ");
+    io::stdout().flush().unwrap();
+    let mut username = String::new();
+    io::stdin().read_line(&mut username).unwrap();
+    let username = username.trim();
+
+    print!("Enter PostgreSQL password: ");
+    io::stdout().flush().unwrap();
+    let mut password = String::new();
+    io::stdin().read_line(&mut password).unwrap();
+    let password = password.trim();
+
+    let mut client = Client::connect(
+        &format!("host=localhost user={} password={}", username, password),
+        NoTls,
+    )?;
     client.batch_execute(
         "
         CREATE DATABASE bitcoin_explorer;
